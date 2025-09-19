@@ -247,8 +247,17 @@ r 0.608 0 1 cbr 1000 ------- 0 0.0 1.0 0 0)]
 
 ### **Síntese do Aprendizado**
 
-*   
+*   Este laboratório permitiy aprofundar o entendimento sobre a Qualidade de Serviço(QoS), não só de apenas de forma teórica, mas também com simulações práticas.Com os experimentos, ficou claro que a relação entre os parâmetros de QoS(latência, jitter, throughput e perda de pacotes) e o desempenho das aplicações é direta e crítica.
+*   Latência: A simulação mostrou que a latẽncia de ponta a ponta é diretamente proporcionao ao atraso do link(link_delay), e mesmo com pequenas variações podem ser significativas em aplicações críticas.
+*   Jitter e Perda de Pacotes: No Wireshark, ao observar o jitter e a perda de pacotes, me mostrou que são métricas essenciais para avaliar a saúde da rede, com valores fora do padrão, como foi mostrado na simulação que tornou a comunicação inviável.
+*   Throughput vs. Responsividade: O teste que comparou o FTP e Ping demonstrou que nem sempre é possível otimizar o throughput e a responsividade ao mesmo tempo. A aplicação da QoS se torna essencial para priorizar o que é mais importante em um cenário de rede com capacidade limitada
 
+*   Pensando na narrativa da telecirurgia, a vida do paciente depende de uma rede que não pode falhar, onde as aplicações envolvidas(Video HD, áudio, comandos táteis e dados de monitoramento) têm diferentes requisitos de QoS, e uma solução eficiente precisa priorizar o tráfego de forma inteligente. A solução de QoS para a telecirurgia deve se basear na classificação de tráfego e priorização de pacotes, garantindo que as informações mais críticas cheguem primeiro e com a menor latẽncia possível.
+*   Podemos pensar na solução em forma de Fila Vermelha, Amarela e verde:
+*   Fila vermelha(Crítica - comando Tátil) - O pacote Flash deve receber a mais alta prioridade. Pensando na vida do paciente, onde a entrega deve ser feita em milissegundos, e a fila deve ter garantia de largura de banda e a menor latência e jitter possível. A perda de pacotes deve ser zero.
+*   Fila Amarela(Importante - Áudio e Video) - Os pacotes Melody e Pablo devem ter a segunda maior prioridade, onde o áudio é mais sensível ao jitter, deve ser priorizado em relação ao vídeo, mas ambos precisam de um bom throughput para garantir uma transmissão clara. A latẽncia e a perda de pacotes devem ser mantidas dentro de limites aceitáveis.
+*   Fila Verde(Normal 0 Monitoramento) - O pacoe Data deve ter prioridade normal, onde os dados vitais do paciente são imporantes, mas não precisam de uma latência tão baixa quanto os comandos táteis e a rede deve garantir que a perda de pacotes seja mantida em um nível aceitável.
+*   Com essa solução, a rede de telecirurgia garante que, mesmo em momentos de congestionamento, os comandos do Dr. Martinez sempre chugem a tempo e com segurança, permitindo que a cirurgia seja um sucesso. A QoS, nesse cenário, deixa apenas de ser uma otimização e se torna fundamental para a segurança e o sucesso da missão.
 ---
 
 **Instruções Finais para os Alunos:**
