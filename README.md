@@ -152,7 +152,8 @@ r 0.608 0 1 cbr 1000 ------- 0 0.0 1.0 0 0)]
     *   o RTP é o protocolo que transporta os dados de midia em tempo real(video e audio), e ele é criptografado para garantir a privacidade e segurança da comunicação.
     *   o RTCP é um protocolo complementar que funciona como um "termômetro da rede", onde acaba transportando relatórios de qualidade sobre o que está acontecendo com o fluxo de dados. Ele é essencial porque a aplicação precisa saber se a rede está funcionando bem, mesmo quando o conteúdo da chamada esteja criptografado.
 3.  **Como as informações de jitter e perda de pacotes reportadas pelo RTCP podem ser usadas pela aplicação (Google Meet) para ajustar a qualidade da transmissão?**
-    *   [Sua Resposta Aqui]
+    *   As informações do RTCP servem como um mecanismo de feedback para a aplicação, no caso, quando o google meet recebe um "Receiver Report" com altos valores de jitter e perda de pacotes, ele acaba detectando que a rede está congestionada ou com baixa qualidade.
+    *   Com base nisso, a aplicação pode tomar medidas adaptativas, como reduzir a taxa de bits de transmissão, diminuit a resolução do vídeo, usar codecs de áudio mais eficientes ou até mesmo desativar o vídeo temporariamente para priorizar o áudio, onde acaba permitindo que a chamada continue, mesmo com uma qualidade reduzida, ao invés de ser completamente interrompida.
 
 ---
 
@@ -168,35 +169,38 @@ r 0.608 0 1 cbr 1000 ------- 0 0.0 1.0 0 0)]
 ```tcl
 # [INSERIR CÓDIGO DO lab_throughput_responsividade.tcl AQUI]
 ```
+<img width="504" height="859" alt="tela do lab_throughput_responsividade tcl" src="https://github.com/user-attachments/assets/eafffe23-4d00-4b6f-8e87-d7f453ac61cf" />
+
+ />
 
 ### **7.2. Análise do Throughput e Responsividade**
 
 *   Analisei o arquivo `lab_throughput_responsividade.tr` para calcular o throughput do FTP e a latência de cada ping.
 
 **Cálculos Detalhados do Throughput do FTP:**
-*   Número de pacotes TCP recebidos: [Valor]
-*   Tamanho do pacote TCP (padrão NS2): 512 bytes (ou especifique se diferente)
-*   Tempo total da simulação para FTP (stop - start): [Valor] segundos
+*   Número de pacotes TCP recebidos: 401
+*   Tamanho do pacote TCP (padrão NS2): 1000 bytes ou 512(Se for padrão)
+*   Tempo total da simulação para FTP (stop - start):4 segundos
 *   Throughput = (Número de pacotes * Tamanho do pacote) / Tempo
-*   Throughput (em Kbps/Mbps): [Resultado]
+*   Throughput (em Kbps/Mbps): 0.802 Mbps
 
 **Cálculos da Latência para cada pacote Ping e Impacto do FTP:**
 
 | Ping Nº | Timestamp Envio | Timestamp Recebimento | Latência (ms) | Observações sobre o Impacto do FTP |
 | :------ | :-------------- | :-------------------- | :------------ | :--------------------------------- |
-| 1       | [Valor]         | [Valor]               | [Resultado]   | [Análise]                          |
-| 2       | [Valor]         | [Valor]               | [Resultado]   | [Análise]                          |
-| ...     | ...             | ...                   | ...           | ...                                |
+| 1       | 1.0s            | 1.020s                | 20ms          | A latencia é afetada pela transferencia do FTP|
+| 2       | 1.3s            | 1.325s                | 25ms          | Variação na latência (jitter) devido ao congestionamento.|
+| 3       | 1.6s            | 1.625s                | 25ms          | Continua a competir por banda com os pacotes TCP.|
+
 
 ### **7.3. Perguntas para Refletir e Discutir**
 
 1.  **Qual aplicação (FTP ou Ping) é mais sensível à latência? Por quê?**
-    *   [Sua Resposta Aqui]
+    *   A aplicação Ping é mais sensivel que à latência, porém o FTP precise de um tempo de resposta mínimo para iniciar a transfência de arquivos, sua principal métrica é a quantidade total de dados transferidos por segundo(throughput). Já o Ping, que representa os comandos táteis na telecirurgia, depende de uma latência extremamente baixa para que a ação do cirurgião sejá replicada no bisturi em tempo real, sem atrasos perceptíveis que possam comprometer a segurança do paciente.
 2.  **Como o throughput do FTP foi afetado pela capacidade do link?**
-    *   [Sua Resposta Aqui]
+    *   O throughput do FTP foi diretamente limitado pela capacidade do link. O linke que foi configurado tem uma capacidade de 10Mbps, e o throughput medido do FTP foi de 0.802 Mbps, na qual demonstrou que a capacidade do link atua como um gargalo, onde limitou a quantidade de dados que o FTP pode transferir em um determinado período. Os pacotes do Ping também competem por essa mesma capacidade limitada, na qual afetou ainda mais o throughput do FTP.
 3.  **Em um cenário de telecirurgia, qual seria a prioridade: alto throughput para o vídeo HD (Pablo) ou alta responsividade para os comandos do bisturi (Flash)? Justifique.**
-    *   [Sua Resposta Aqui]
-
+    *   Nesse cenário a prioridade máxima seria a alta responsividade para os comandos do bisturi(Flash). Enquanto o video HD(Pablo) é importante para visualização, um atraso em seu streaming resultaria apenas em uma imagem congelada ou travada. Já um atraso de milissegundos nos comandos táteis(Flash) poderia causar movimentos imprecisos do bisturi, com consequências fatais para o paciente, portanto, a responsividade dos comandos é mais crítica que o throughput do vídeo, e a rede deve ser configurada para dar a eles a maior prioridade.
 ---
 
 ## 8. Parte V: Perda de Pacotes – O Preço da Imperfeição
@@ -208,9 +212,10 @@ r 0.608 0 1 cbr 1000 ------- 0 0.0 1.0 0 0)]
 *   Criei e executei o script `lab_perda.tcl`, ajustando a taxa de erro de bit (`rate_`) para diferentes valores (ex: 1e-2, 1e-5) no `ErrorModel`.
 
 **Entrega:** O código `lab_perda.tcl` utilizado.
-```tcl
+```
 # [INSERIR CÓDIGO DO lab_perda.tcl AQUI]
 ```
+<img width="528" height="740" alt="codigo lab perda" src="https://github.com/user-attachments/assets/f24e35ce-efd3-4803-9be7-987c4a4b0569" />
 
 ### **8.2. Análise da Perda de Pacotes no Arquivo de Trace (.tr)**
 
@@ -220,20 +225,21 @@ r 0.608 0 1 cbr 1000 ------- 0 0.0 1.0 0 0)]
 
 | `rate_` Configurado (ErrorModel) | Pacotes UDP Enviados | Pacotes UDP Recebidos | Pacotes Perdidos | Taxa de Perda (%) |
 | :------------------------------- | :------------------- | :-------------------- | :--------------- | :---------------- |
-| [Valor 1 (e.g., 1e-2)]           | [Valor]              | [Valor]               | [Valor]          | [Resultado]       |
-| [Valor 2 (e.g., 1e-5)]           | [Valor]              | [Valor]               | [Valor]          | [Resultado]       |
+| 1e-2                             | 401                  |~30                    | ~371             | ~92.5%            |
+| 1e-5                             | 401                  |~400                   | ~1               | ~0.25%            |
 
 **Descrição do Comportamento do TCP:**
-*   [Descreva o que você observou no trace file para o TCP, mencionando eventos de retransmissão (R) e ACKs, e como ele se diferencia do UDP em termos de entrega final]
-
+*   O UDP não se preocupa com a entrega dos pacotes, ele simplesmente os envia. Por isso, a taxa de perda de pacotes para o UDP é a taxa de erro de bit real da rede.
+*   O TCP é um protocolo que garante a entrega, onde ele envia pacotes e espera por uma confirmação de recebimento (ACK). Quando um pacote é perdido, o TCP não recebe o ACK, e ele retransmite o pacote. Além disso, a perda de pacotes faz com que o TCP reduza sua taxa de envio para evitar congestionamento, sendo chamado de !congestion control".
 ### **8.3. Perguntas para Refletir e Discutir**
 
 1.  **Qual protocolo (UDP ou TCP) é mais afetado pela perda de pacotes em termos de entrega final? Por quê?**
-    *   [Sua Resposta Aqui]
+    *   O protocolo UDP acaba sendo o mais afetado pela perda de pacotes em termos de entrega final, pois o UDP não garante que os pacotes cheguem ao destino, pois ele simplesmente os envia sem se preocupar com a confirmação de recebimento. Se um pacote é perdido ou corrompido, ele não é retransmitido, e os dados são perdidos para sempre. Porém o TCP garante a entrega final. Ele retransmite pacotes perdidos, embora isso possa causar atrasos na entrega. Portanto, em uma rede com perdas, o TCP garante a integridade dos dados, enquanto o UDP não.
 2.  **Como a taxa de perda configurada no script (`rate_`) se compara à taxa de perda observada para o UDP?**
-    *   [Sua Resposta Aqui]
+    *   A taxa de perda configurada no script é a taxa de erro de bit(BER), que é a probalidade de um único bit ser corrompudo. Já a taxa de perda observada para o UDP é a probabilidade de im pacote inteiro ser perdido.Como um pacote é composto por muitos bits, a probabilidade de um pacote ser corrompido é muito maior que a de um único bit, por isso a taxa de perda de pacotes observada para o UDP é significativamente maior do que a taxa de erro de bit configurada.
 3.  **Dê exemplos de aplicações que toleram alta perda de pacotes e aplicações que não toleram nenhuma perda.**
-    *   [Sua Resposta Aqui]
+    *   Aplicações que toleram alta perda de pacotes: Aplica;'oes de streaming de vídeo, como netflix e youtube e voz sobre IP, tem o VoIP.Essas aplicações, uma pequena perda de pacotes é aceitável, pois pode ser suavizada pelo codecs de áudio e video sem comprometer a qualidade da experiência do usuário.
+    *   Aplicações que não toleram nenhuma perda: Aplicações de transferência de arquivos, navegação web e transações bancárias. Essas aplicações precisam de 100% de integridade dos dados.
 
 ---
 
@@ -241,7 +247,7 @@ r 0.608 0 1 cbr 1000 ------- 0 0.0 1.0 0 0)]
 
 ### **Síntese do Aprendizado**
 
-*   [Escreva uma síntese dos principais aprendizados sobre a relação entre os parâmetros de QoS (latência, jitter, throughput, perda) e o desempenho de diferentes aplicações, utilizando os resultados dos experimentos. Faça um link com a **narrativa da telecirurgia** e proponha uma **solução baseada em QoS** para otimizar o desempenho das aplicações críticas nesse cenário desafiador (vídeo HD, comandos táteis, voz, dados do paciente).]
+*   
 
 ---
 
